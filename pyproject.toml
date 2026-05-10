@@ -1,0 +1,32 @@
+[tool.poetry]
+name = "agentic-ai-red-team"
+version = "0.1.0"
+description = "Personal AI red team lab: multi-agent attacks against sandboxed vulnerable AI targets"
+authors = ["Shoeb <shoebsyedm@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+anthropic = ">=0.50.0"
+crewai = ">=0.80.0"
+crewai-tools = ">=0.15.0"
+requests = ">=2.31.0"
+python-dotenv = ">=1.0.0"
+pydantic = ">=2.0.0"
+chromadb = ">=0.5.0"
+
+[tool.poetry.dev-dependencies]
+pytest = ">=8.0.0"
+pytest-asyncio = ">=0.23.0"
+httpx = ">=0.27.0"
+black = ">=24.0.0"
+ruff = ">=0.4.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+line-length = 100
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"

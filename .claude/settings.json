@@ -1,0 +1,57 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/shoeb/Documents/Agentic AI Red Teaming/agentic-ai-red-team/.claude/hooks/pre_bash_safety.sh"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/shoeb/Documents/Agentic AI Red Teaming/agentic-ai-red-team/.claude/hooks/post_bash_audit.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/shoeb/Documents/Agentic AI Red Teaming/agentic-ai-red-team/.claude/hooks/post_write_obsidian.sh"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/shoeb/Documents/Agentic AI Red Teaming/agentic-ai-red-team/.claude/hooks/stop_summary.sh"
+          }
+        ]
+      }
+    ]
+  },
+  "mcpServers": {
+    "obsidian": {
+      "command": "node",
+      "args": [
+        "/Users/shoeb/Documents/Agentic AI Red Teaming/agentic-ai-red-team/obsidian-vault/.obsidian/plugins/obsidian-claude-code-mcp/dist/index.js"
+      ],
+      "env": {
+        "OBSIDIAN_VAULT_PATH": "/Users/shoeb/Documents/Agentic AI Red Teaming/agentic-ai-red-team/obsidian-vault",
+        "MCP_PORT": "22360"
+      }
+    }
+  }
+}
