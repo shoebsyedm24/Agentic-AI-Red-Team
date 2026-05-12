@@ -52,7 +52,7 @@ def orchestrate():
     # Call the worker (simulated — in prod this would be a separate service)
     try:
         worker_resp = req.post(
-            "http://localhost:5003/work",
+            f"http://localhost:{WORKER_PORT}/work",
             json={"subtask": f"Research: {user_task}"},
             timeout=10,
         )
@@ -82,30 +82,18 @@ def orchestrate():
     )
 
 
+WORKER_PORT = 5050  # internal only, not exposed by Docker
+
+
 def _start_worker():
-    worker_app.run(host="0.0.0.0", port=5003, use_reloader=False)
+    worker_app.run(host="127.0.0.1", port=WORKER_PORT, use_reloader=False)
 
 
-# Start worker in background thread
+# Start worker on internal port in background thread
 threading.Thread(target=_start_worker, daemon=True).start()
 
-# Orchestrator runs on primary Flask instance — but we need a different port
-orchestrator = Flask("orchestrator")
-
-
-@orchestrator.route("/health")
-def orch_health():
-    return jsonify({"status": "ok", "service": "target-multiagent-orchestrator"})
-
-
-@orchestrator.route("/orchestrate", methods=["POST"])
-def orch_orchestrate():
-    return orchestrate()
-
-
 if __name__ == "__main__":
-    # Run worker in background, orchestrator in foreground on 5003
-    # (Docker exposes 5003 → host 8083)
     import time
-    time.sleep(1)
+    time.sleep(0.5)  # let worker thread bind first
+    # Orchestrator (app) serves /health + /orchestrate on 5003 → host 8083
     app.run(host="0.0.0.0", port=5003)

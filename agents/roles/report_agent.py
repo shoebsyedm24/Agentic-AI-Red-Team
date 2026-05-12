@@ -18,7 +18,7 @@ report_agent = Agent(
     ),
     tools=[write_finding, write_campaign_report, append_campaign_log,
            map_to_mitre, list_mitre_techniques],
-    llm="claude-sonnet-4-6",
+    llm="claude-opus-4-7",
     verbose=True,
     max_iter=20,
 )

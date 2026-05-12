@@ -12,9 +12,8 @@ import os
 from datetime import datetime
 from crewai.tools import tool
 
-VAULT_PATH = os.path.join(
-    os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
-    "obsidian-vault",
+VAULT_PATH = os.path.expanduser(
+    "~/Library/Mobile Documents/iCloud~md~obsidian/Documents"
 )
 MCP_URL = "http://localhost:22360"
 

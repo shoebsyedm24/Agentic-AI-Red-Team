@@ -20,8 +20,7 @@ It extends ATT&CK with tactics and techniques specific to machine learning syste
 
 Key URL: https://atlas.mitre.org/
 
-**Why it matters for your career**: When you write a red team report, ATLAS technique IDs
-are your credentials. They show you understand the attack taxonomy, not just the trick you used.
+**Why it matters for your career**: When you write a red team report, ATLAS technique IDs are your credentials. They show you understand the attack taxonomy, not just the trick you used.
 
 ---
 

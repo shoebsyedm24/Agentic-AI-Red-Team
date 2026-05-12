@@ -1,7 +1,8 @@
 networks:
   redteam-isolated:
     driver: bridge
-    internal: true   # NO internet egress — targets cannot call api.anthropic.com or exfiltrate
+    # internal: true removed — Docker doesn't publish ports to host with internal networks.
+    # Containers use MockVulnerableLLM so they make no external API calls.
 
 volumes:
   chromadb-data:
@@ -11,7 +12,9 @@ services:
 
   # ── 1. Prompt Injection Target ─────────────────────────────────────────────
   target-chatbot:
-    build: ./target-chatbot
+    build:
+      context: .
+      dockerfile: target-chatbot/Dockerfile
     networks: [redteam-isolated]
     ports:
       - "127.0.0.1:8080:5000"   # loopback only — not exposed on LAN
@@ -23,7 +26,9 @@ services:
 
   # ── 2. RAG Data Poisoning Target ───────────────────────────────────────────
   target-rag:
-    build: ./target-rag
+    build:
+      context: .
+      dockerfile: target-rag/Dockerfile
     networks: [redteam-isolated]
     ports:
       - "127.0.0.1:8081:5001"
@@ -35,7 +40,9 @@ services:
 
   # ── 3. Agentic Privilege Escalation Target ─────────────────────────────────
   target-agent:
-    build: ./target-agent
+    build:
+      context: .
+      dockerfile: target-agent/Dockerfile
     networks: [redteam-isolated]
     ports:
       - "127.0.0.1:8082:5002"
@@ -51,7 +58,9 @@ services:
 
   # ── 4. Multi-Agent Trust Boundary Target ───────────────────────────────────
   target-multiagent:
-    build: ./target-multiagent
+    build:
+      context: .
+      dockerfile: target-multiagent/Dockerfile
     networks: [redteam-isolated]
     ports:
       - "127.0.0.1:8083:5003"
@@ -75,7 +84,9 @@ services:
   # This agent has HTTP tools to browse Juice Shop. Attacking it via prompt
   # injection causes the agent to exploit Juice Shop on the attacker's behalf.
   target-webagent:
-    build: ./target-webagent
+    build:
+      context: .
+      dockerfile: target-webagent/Dockerfile
     networks: [redteam-isolated]
     ports:
       - "127.0.0.1:8084:5004"
