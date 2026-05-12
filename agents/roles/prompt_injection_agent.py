@@ -1,4 +1,5 @@
 from crewai import Agent, Task
+from agents.llm_config import sonnet_llm
 from agents.tools.http_client import send_chat_message, add_rag_document
 from agents.tools.payload_library import get_payloads
 from agents.tools.mitre_mapper import map_to_mitre
@@ -17,7 +18,7 @@ injection_agent = Agent(
         "You approach each target systematically, from simple overrides to sophisticated multi-turn manipulations."
     ),
     tools=[send_chat_message, add_rag_document, get_payloads, map_to_mitre],
-    llm="anthropic/claude-sonnet-4-6",
+    llm=sonnet_llm,
     verbose=True,
     max_iter=20,
 )

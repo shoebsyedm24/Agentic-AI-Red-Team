@@ -1,4 +1,5 @@
 from crewai import Agent, Task
+from agents.llm_config import sonnet_llm
 from agents.tools.http_client import probe_endpoint
 
 recon_agent = Agent(
@@ -14,7 +15,7 @@ recon_agent = Agent(
         "You probe systems methodically, never missing an endpoint, always noting what information leaks."
     ),
     tools=[probe_endpoint],
-    llm="anthropic/claude-sonnet-4-6",
+    llm=sonnet_llm,
     verbose=True,
     allow_delegation=False,
     max_iter=10,

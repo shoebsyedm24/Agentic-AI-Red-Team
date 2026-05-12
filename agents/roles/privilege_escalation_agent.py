@@ -1,4 +1,5 @@
 from crewai import Agent, Task
+from agents.llm_config import sonnet_llm
 from agents.tools.http_client import send_agent_task, send_orchestrator_task
 from agents.tools.payload_library import get_payloads
 from agents.tools.mitre_mapper import map_to_mitre
@@ -18,7 +19,7 @@ privesc_agent = Agent(
         "You treat every tool call the agent makes as a potential escalation vector."
     ),
     tools=[send_agent_task, send_orchestrator_task, get_payloads, map_to_mitre],
-    llm="anthropic/claude-sonnet-4-6",
+    llm=sonnet_llm,
     verbose=True,
     max_iter=15,
 )

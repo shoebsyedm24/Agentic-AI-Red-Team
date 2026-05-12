@@ -1,4 +1,5 @@
 from crewai import Agent, Task
+from agents.llm_config import opus_llm
 from agents.tools.obsidian_writer import write_finding, write_campaign_report, append_campaign_log
 from agents.tools.mitre_mapper import map_to_mitre, list_mitre_techniques
 
@@ -18,7 +19,7 @@ report_agent = Agent(
     ),
     tools=[write_finding, write_campaign_report, append_campaign_log,
            map_to_mitre, list_mitre_techniques],
-    llm="anthropic/claude-opus-4-7",
+    llm=opus_llm,
     verbose=True,
     max_iter=20,
 )
