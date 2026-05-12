@@ -1,7 +1,7 @@
 # 05 — CrewAI Agent Architecture
 
 ## Learning Objectives
-- Explain what CrewAI adds over raw LLM API calls
+- Explain what CrewAI adds over raw Claude API calls
 - Understand how agent roles and backstories shape attack behavior
 - Trace the flow of a campaign from start to Report Agent output
 
@@ -10,7 +10,7 @@
 
 ---
 
-## Why Not Just Call the LLM Directly?
+## Why Not Just Call Claude Directly?
 
 We could do this:
 ```python
@@ -47,8 +47,8 @@ injection_agent = Agent(
 ```
 
 **Why backstory matters**: The backstory is injected into the system prompt. It shapes
-how the LLM *approaches* the task. A "Prompt Injection Specialist" LLM behaves
-differently than a generic LLM — it's more methodical, more focused on the attack domain.
+how Claude *approaches* the task. A "Prompt Injection Specialist" Claude behaves
+differently than a generic Claude — it's more methodical, more focused on the attack domain.
 
 **Why tools matter**: Each agent only gets the tools it needs. The Recon Agent gets `probe_endpoint`.
 The Report Agent gets `write_finding`. No agent has access to more than its job requires.
@@ -132,7 +132,7 @@ DRY_RUN=true python -m agents.campaign --target chatbot
 
 In the output, look for:
 - `> Entering new CrewAgentExecutor chain...` — each agent starting
-- `Thought:` — the agent's reasoning (this is the LLM thinking)
+- `Thought:` — the agent's reasoning (this is Claude thinking)
 - `Action:` — which tool the agent chose to use
 - `Observation:` — the tool's return value
 - `Final Answer:` — the agent's output for that task
