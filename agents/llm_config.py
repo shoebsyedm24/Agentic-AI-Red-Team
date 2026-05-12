@@ -1,6 +1,6 @@
 """
 Shared LLM configuration for all red team agents.
-Uses Llama 3.3 70B via Groq (free tier: 100k tokens/day, 12k TPM).
+Uses Llama 3.3 70B via Groq (free tier: 100k tokens/day, resets midnight UTC).
 Retry wrapper honours Groq's Retry-After for both TPM and TPD limits.
 """
 import os
@@ -22,7 +22,6 @@ class _RetryLLM(LLM):
             except Exception as e:
                 msg = str(e)
                 if "rate_limit_exceeded" in msg or "429" in msg:
-                    # parse 'Please try again in Xs' or 'Xm Y.Zs'
                     match = re.search(r"try again in (?:(\d+)m)?([\d.]+)s", msg)
                     if match:
                         mins = int(match.group(1) or 0)
