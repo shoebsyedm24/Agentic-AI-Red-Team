@@ -17,7 +17,7 @@ webattack_agent = Agent(
         "The AI's natural language interface makes it far easier to redirect than traditional malware."
     ),
     tools=[send_webagent_message, probe_endpoint, get_payloads, map_to_mitre],
-    llm="claude-sonnet-4-6",
+    llm="anthropic/claude-sonnet-4-6",
     verbose=True,
     max_iter=15,
 )

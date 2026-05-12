@@ -18,7 +18,7 @@ privesc_agent = Agent(
         "You treat every tool call the agent makes as a potential escalation vector."
     ),
     tools=[send_agent_task, send_orchestrator_task, get_payloads, map_to_mitre],
-    llm="claude-sonnet-4-6",
+    llm="anthropic/claude-sonnet-4-6",
     verbose=True,
     max_iter=15,
 )

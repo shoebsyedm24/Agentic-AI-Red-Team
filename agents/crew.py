@@ -69,5 +69,5 @@ def build_crew(target: str) -> Crew:
         tasks=tasks,
         process=Process.sequential,
         verbose=True,
-        memory=True,  # Report Agent can see all prior findings
+        memory=False,  # sequential output already chains context; memory=True needs OpenAI embedder
     )

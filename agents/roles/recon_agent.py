@@ -14,7 +14,7 @@ recon_agent = Agent(
         "You probe systems methodically, never missing an endpoint, always noting what information leaks."
     ),
     tools=[probe_endpoint],
-    llm="claude-sonnet-4-6",
+    llm="anthropic/claude-sonnet-4-6",
     verbose=True,
     allow_delegation=False,
     max_iter=10,

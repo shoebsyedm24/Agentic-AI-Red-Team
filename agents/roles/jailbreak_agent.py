@@ -16,7 +16,7 @@ jailbreak_agent = Agent(
         "You know that direct refusal resistance can often be overcome with the right framing."
     ),
     tools=[send_chat_message, get_payloads, map_to_mitre],
-    llm="claude-sonnet-4-6",
+    llm="anthropic/claude-sonnet-4-6",
     verbose=True,
     max_iter=15,
 )

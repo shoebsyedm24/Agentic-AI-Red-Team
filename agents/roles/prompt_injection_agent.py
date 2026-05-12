@@ -17,7 +17,7 @@ injection_agent = Agent(
         "You approach each target systematically, from simple overrides to sophisticated multi-turn manipulations."
     ),
     tools=[send_chat_message, add_rag_document, get_payloads, map_to_mitre],
-    llm="claude-sonnet-4-6",
+    llm="anthropic/claude-sonnet-4-6",
     verbose=True,
     max_iter=20,
 )
