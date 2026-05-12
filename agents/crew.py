@@ -10,6 +10,7 @@ To add a new attack type:
   2. Import it here and add to the agents/tasks lists
   3. Add target config in campaign.py
 """
+import time
 from crewai import Crew, Process
 
 from agents.roles.recon_agent import recon_agent, recon_task
@@ -64,10 +65,16 @@ def build_crew(target: str) -> Crew:
     agents = TARGET_AGENT_MAP.get(target, ALL_AGENTS)
     tasks = TARGET_TASK_MAP.get(target, ALL_TASKS)
 
+    def _task_pause(output):
+        """30s gap between tasks so each agent gets a fresh Groq TPM window."""
+        print("[crew] waiting 30s for Groq TPM window to reset...")
+        time.sleep(30)
+
     return Crew(
         agents=agents,
         tasks=tasks,
         process=Process.sequential,
         verbose=True,
-        memory=False,  # sequential output already chains context; memory=True needs OpenAI embedder
+        memory=False,
+        task_callback=_task_pause,
     )

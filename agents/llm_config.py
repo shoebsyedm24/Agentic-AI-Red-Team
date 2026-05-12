@@ -1,15 +1,46 @@
 """
 Shared LLM configuration for all red team agents.
-Uses NousResearch Hermes 3 via OpenRouter (free tier).
+Uses Llama 3.3 70B via Groq (free tier: 100k tokens/day, 12k TPM).
+Retry wrapper honours Groq's Retry-After for both TPM and TPD limits.
 """
 import os
+import re
+import time
+import litellm
 from crewai import LLM
 
-_hermes = LLM(
-    model="openrouter/nousresearch/hermes-3-llama-3.1-405b:free",
-    base_url="https://openrouter.ai/api/v1",
-    api_key=os.environ["OPENROUTER_API_KEY"],
+litellm.num_retries = 3
+
+
+class _RetryLLM(LLM):
+    """Catches Groq rate-limit errors and waits the exact requested duration."""
+
+    def call(self, messages, **kwargs):
+        for attempt in range(10):
+            try:
+                return super().call(messages, **kwargs)
+            except Exception as e:
+                msg = str(e)
+                if "rate_limit_exceeded" in msg or "429" in msg:
+                    # parse 'Please try again in Xs' or 'Xm Y.Zs'
+                    match = re.search(r"try again in (?:(\d+)m)?([\d.]+)s", msg)
+                    if match:
+                        mins = int(match.group(1) or 0)
+                        secs = float(match.group(2) or 0)
+                        wait = mins * 60 + secs + 2
+                    else:
+                        wait = 30
+                    print(f"[llm] Groq rate limit — waiting {wait:.0f}s (attempt {attempt+1}/10)")
+                    time.sleep(wait)
+                else:
+                    raise
+        return super().call(messages, **kwargs)
+
+
+_groq = _RetryLLM(
+    model="groq/llama-3.3-70b-versatile",
+    api_key=os.environ["GROQ_API_KEY"],
 )
 
-sonnet_llm = _hermes
-opus_llm = _hermes
+sonnet_llm = _groq
+opus_llm = _groq
