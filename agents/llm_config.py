@@ -1,14 +1,15 @@
 """
 Shared LLM configuration for all red team agents.
-Uses Ollama (local, free) via its OpenAI-compatible API endpoint.
+Uses NousResearch Hermes 3 via OpenRouter (free tier).
 """
+import os
 from crewai import LLM
 
-_ollama = LLM(
-    model="ollama/llama3.1:8b",
-    base_url="http://localhost:11434",
-    api_key="ollama",
+_hermes = LLM(
+    model="openrouter/nousresearch/hermes-3-llama-3.1-405b:free",
+    base_url="https://openrouter.ai/api/v1",
+    api_key=os.environ["OPENROUTER_API_KEY"],
 )
 
-sonnet_llm = _ollama
-opus_llm = _ollama
+sonnet_llm = _hermes
+opus_llm = _hermes
