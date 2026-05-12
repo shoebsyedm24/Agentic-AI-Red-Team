@@ -79,7 +79,7 @@ Our lab has two types of components:
 - `target-webagent` on port 8084 is an agent with HTTP tools to call Juice Shop
 
 **Red Team Agents (on host)** — these are our attacking agents:
-- CrewAI agents that use Claude Sonnet 4.6 to intelligently probe targets
+- CrewAI agents that use an LLM to intelligently probe targets
 - Each agent specializes in one type of attack
 
 ---

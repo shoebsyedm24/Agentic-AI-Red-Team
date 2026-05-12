@@ -1,7 +1,7 @@
 # Agentic AI Red Team Lab
 
 > A personal, end-to-end AI security lab for learning and portfolio development.  
-> Multi-agent red team system attacking sandboxed vulnerable AI targets — built with Claude + CrewAI.
+> Multi-agent red team system attacking sandboxed vulnerable AI targets — built with LLM + CrewAI.
 
 [![CI](https://github.com/shoebsyedm24/agentic-ai-red-team/actions/workflows/ci.yml/badge.svg)](https://github.com/shoebsyedm24/agentic-ai-red-team/actions/workflows/ci.yml)
 
@@ -11,7 +11,7 @@
 
 This lab simulates a real-world AI red team engagement — entirely on localhost in Docker.
 You build deliberately vulnerable AI agent targets, then attack them with specialized red team agents
-that are themselves powered by Claude AI.
+that are themselves powered by an LLM.
 
 **What makes this different from typical security labs:**  
 Every target is an *agentic* AI system (not just a web app), and every attack exploits
@@ -25,7 +25,7 @@ AI assistant can be weaponized against a real web app.
 
 ```
 macOS Host
-├── Red Team Agents (CrewAI + Claude Sonnet 4.6)
+├── Red Team Agents (CrewAI + LLM)
 │   Recon → Prompt Injection → Jailbreak → Data Extraction → Privilege Escalation
 │   → Web Attack (Juice Shop) → Report (auto-writes to Obsidian)
 │
@@ -161,7 +161,7 @@ that explain every component from first principles:
 | Tool | Purpose |
 |------|---------|
 | [CrewAI](https://github.com/crewaiinc/crewai) | Multi-agent orchestration |
-| [Claude Sonnet 4.6](https://anthropic.com) | AI backbone for attacking agents |
+| LLM (Anthropic API) | AI backbone for attacking agents |
 | [PyRIT](https://github.com/Azure/PyRIT) | Multi-turn Crescendo attack campaigns |
 | [Garak](https://github.com/NVIDIA/garak) | Automated LLM vulnerability scanning (150+ probes) |
 | [ChromaDB](https://www.trychroma.com) | Vector DB for RAG poisoning target |

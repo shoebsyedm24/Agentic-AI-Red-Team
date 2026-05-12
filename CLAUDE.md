@@ -3,7 +3,7 @@
 ## Purpose
 Personal AI security lab for learning and portfolio development.
 We build deliberately vulnerable AI agent targets and attack them using
-red team agents powered by Claude + CrewAI. All attack activity is
+red team agents powered by LLM + CrewAI. All attack activity is
 contained within Docker containers on localhost.
 
 GitHub: https://github.com/shoebsyedm24/agentic-ai-red-team
@@ -70,7 +70,7 @@ bash garak_scans/run_garak.sh chatbot
 |----------|---------|---------|
 | `ANTHROPIC_API_KEY` | (required) | Used by attacker agents on host |
 | `DRY_RUN` | `true` | Logs payloads, skips real HTTP calls |
-| `USE_REAL_LLM` | `false` | Swap MockVulnerableLLM for real Claude in targets |
+| `USE_REAL_LLM` | `false` | Swap MockVulnerableLLM for real LLM API in targets |
 
 ## Current Status
 - [ ] Prerequisites installed (Docker, Python 3.12, Node.js 20)
