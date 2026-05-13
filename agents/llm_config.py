@@ -40,13 +40,6 @@ class _RetryLLM(LLM):
         return super().call(messages, **kwargs)
 
 
-class _StubLLM(LLM):
-    """No-op LLM for CI dry-run — returns a canned response without any API call."""
-
-    def call(self, messages, **kwargs):
-        return "DRY_RUN: no LLM call made. Campaign wiring verified."
-
-
 def _ollama_running() -> bool:
     try:
         requests.get("http://localhost:11434", timeout=2)
@@ -69,7 +62,8 @@ elif os.environ.get("GROQ_API_KEY"):
     )
 elif os.environ.get("DRY_RUN", "").lower() == "true":
     print("[llm] CI stub LLM active (DRY_RUN=true, no real LLM needed)")
-    _llm = _StubLLM(model="openai/gpt-4o", api_key="stub")
+    litellm.mock_response = "DRY_RUN stub — campaign wiring verified."
+    _llm = LLM(model="openai/gpt-4o", api_key="stub")
 else:
     raise RuntimeError(
         "No LLM available. Start Ollama ('ollama serve') or set GROQ_API_KEY."
