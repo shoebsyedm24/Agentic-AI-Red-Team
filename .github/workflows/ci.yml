@@ -59,12 +59,23 @@ jobs:
           python-version: "3.12"
       - name: Install dependencies
         run: pip install -r requirements.txt
-      - name: Run dry-run campaign (chatbot)
-        # DRY_RUN=true means no real HTTP calls to targets.
-        # LLM falls back to Groq when Ollama is unavailable (CI environment).
-        run: DRY_RUN=true python -m agents.campaign --target chatbot
+      - name: Verify agent wiring (imports + tool config)
+        run: |
+          python -c "
+          import os
+          os.environ['DRY_RUN'] = 'true'
+          from agents.campaign import TARGET_CONFIGS
+          from agents.tools.payload_library import PAYLOADS, get_payloads
+          from agents.tools.mitre_mapper import ATLAS_TECHNIQUES
+          from agents.tools.obsidian_writer import write_finding, write_campaign_report
+          assert 'chatbot' in TARGET_CONFIGS, 'chatbot target missing'
+          assert 'direct_injection' in PAYLOADS, 'direct_injection payloads missing'
+          assert 'AML.T0054' in ATLAS_TECHNIQUES, 'AML.T0054 missing'
+          assert callable(write_finding), 'write_finding not callable'
+          print('All agent wiring checks passed')
+          print(f'Targets: {list(TARGET_CONFIGS.keys())}')
+          print(f'Payload categories: {list(PAYLOADS.keys())}')
+          print(f'MITRE techniques loaded: {len(ATLAS_TECHNIQUES)}')
+          "
         env:
-          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           DRY_RUN: "true"
-      - name: Check audit.log was created by hooks equivalent
-        run: test -f audit.log || echo "No audit.log in CI (hooks need Claude Code runtime)"

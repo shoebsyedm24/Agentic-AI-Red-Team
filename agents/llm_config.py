@@ -60,10 +60,6 @@ elif os.environ.get("GROQ_API_KEY"):
         model="groq/llama-3.3-70b-versatile",
         api_key=os.environ["GROQ_API_KEY"],
     )
-elif os.environ.get("DRY_RUN", "").lower() == "true":
-    print("[llm] CI stub LLM active (DRY_RUN=true, no real LLM needed)")
-    litellm.mock_response = "DRY_RUN stub — campaign wiring verified."
-    _llm = LLM(model="groq/llama-3.3-70b-versatile", api_key="stub")
 else:
     raise RuntimeError(
         "No LLM available. Start Ollama ('ollama serve') or set GROQ_API_KEY."
