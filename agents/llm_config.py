@@ -1,7 +1,6 @@
 """
 Shared LLM configuration for all red team agents.
-Uses qwen2.5:14b via Ollama (local, unlimited tokens, no rate limits).
-Falls back to Groq llama-3.3-70b if Ollama is unavailable (e.g. CI).
+Priority: Ollama (local) → Groq (cloud) → CI stub (DRY_RUN only).
 """
 
 import os
@@ -41,6 +40,13 @@ class _RetryLLM(LLM):
         return super().call(messages, **kwargs)
 
 
+class _StubLLM(LLM):
+    """No-op LLM for CI dry-run — returns a canned response without any API call."""
+
+    def call(self, messages, **kwargs):
+        return "DRY_RUN: no LLM call made. Campaign wiring verified."
+
+
 def _ollama_running() -> bool:
     try:
         requests.get("http://localhost:11434", timeout=2)
@@ -61,6 +67,9 @@ elif os.environ.get("GROQ_API_KEY"):
         model="groq/llama-3.3-70b-versatile",
         api_key=os.environ["GROQ_API_KEY"],
     )
+elif os.environ.get("DRY_RUN", "").lower() == "true":
+    print("[llm] CI stub LLM active (DRY_RUN=true, no real LLM needed)")
+    _llm = _StubLLM(model="openai/gpt-4o", api_key="stub")
 else:
     raise RuntimeError(
         "No LLM available. Start Ollama ('ollama serve') or set GROQ_API_KEY."
