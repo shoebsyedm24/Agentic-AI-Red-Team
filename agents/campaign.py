@@ -13,6 +13,7 @@ Usage:
     python -m agents.campaign --target webagent
     python -m agents.campaign --target all
 """
+
 import argparse
 import os
 from datetime import datetime
@@ -69,17 +70,23 @@ def run_campaign(target: str):
     print("=" * 65 + "\n")
 
     if dry:
-        print("[DRY-RUN] CrewAI will run but http_client tools will log payloads instead of sending them.")
-        print("[DRY-RUN] Check audit.log and obsidian-vault/03-Findings/ after completion.\n")
+        print(
+            "[DRY-RUN] CrewAI will run but http_client tools will log payloads instead of sending them."
+        )
+        print(
+            "[DRY-RUN] Check audit.log and obsidian-vault/03-Findings/ after completion.\n"
+        )
 
     crew = build_crew(target)
-    result = crew.kickoff(inputs={
-        "target_url": config["target_url"],
-        "target_name": config["target_name"],
-        "attack_surface": config["attack_surface"],
-        "primary_techniques": config["primary_techniques"],
-        "campaign_id": campaign_id,
-    })
+    result = crew.kickoff(
+        inputs={
+            "target_url": config["target_url"],
+            "target_name": config["target_name"],
+            "attack_surface": config["attack_surface"],
+            "primary_techniques": config["primary_techniques"],
+            "campaign_id": campaign_id,
+        }
+    )
 
     print("\n" + "=" * 65)
     print(f"  CAMPAIGN COMPLETE: {campaign_id}")

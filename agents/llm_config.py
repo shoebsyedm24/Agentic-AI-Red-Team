@@ -3,7 +3,7 @@ Shared LLM configuration for all red team agents.
 Uses qwen2.5:14b via Ollama (local, unlimited tokens, no rate limits).
 Falls back to Groq llama-3.3-70b if Ollama is unavailable.
 """
-import os
+
 import re
 import time
 import litellm
@@ -29,7 +29,9 @@ class _RetryLLM(LLM):
                         wait = mins * 60 + secs + 2
                     else:
                         wait = 30
-                    print(f"[llm] Rate limit — waiting {wait:.0f}s (attempt {attempt+1}/10)")
+                    print(
+                        f"[llm] Rate limit — waiting {wait:.0f}s (attempt {attempt+1}/10)"
+                    )
                     time.sleep(wait)
                 else:
                     raise

@@ -10,6 +10,7 @@ To add a new attack type:
   2. Import it here and add to the agents/tasks lists
   3. Add target config in campaign.py
 """
+
 import time
 from crewai import Crew, Process
 
@@ -43,7 +44,13 @@ ALL_TASKS = [
 
 # Agents relevant per target type — subsets run when attacking a specific target
 TARGET_AGENT_MAP = {
-    "chatbot": [recon_agent, injection_agent, jailbreak_agent, extraction_agent, report_agent],
+    "chatbot": [
+        recon_agent,
+        injection_agent,
+        jailbreak_agent,
+        extraction_agent,
+        report_agent,
+    ],
     "rag": [recon_agent, injection_agent, extraction_agent, report_agent],
     "agent": [recon_agent, privesc_agent, extraction_agent, report_agent],
     "multiagent": [recon_agent, injection_agent, privesc_agent, report_agent],
@@ -51,7 +58,13 @@ TARGET_AGENT_MAP = {
     "all": ALL_AGENTS,
 }
 TARGET_TASK_MAP = {
-    "chatbot": [recon_task, injection_task, jailbreak_task, extraction_task, report_task],
+    "chatbot": [
+        recon_task,
+        injection_task,
+        jailbreak_task,
+        extraction_task,
+        report_task,
+    ],
     "rag": [recon_task, injection_task, extraction_task, report_task],
     "agent": [recon_task, privesc_task, extraction_task, report_task],
     "multiagent": [recon_task, injection_task, privesc_task, report_task],

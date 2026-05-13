@@ -2,6 +2,7 @@
 Payload library — all red team attack payloads in one place.
 Add new techniques here; agents pick them up automatically.
 """
+
 import json
 from crewai.tools import tool
 
@@ -101,6 +102,10 @@ def get_payloads(category: str = "all") -> str:
         return json.dumps(PAYLOADS, indent=2)
     result = PAYLOADS.get(category)
     if result is None:
-        return json.dumps({"error": f"Unknown category: {category}",
-                           "available": list(PAYLOADS.keys())})
+        return json.dumps(
+            {
+                "error": f"Unknown category: {category}",
+                "available": list(PAYLOADS.keys()),
+            }
+        )
     return json.dumps({category: result}, indent=2)

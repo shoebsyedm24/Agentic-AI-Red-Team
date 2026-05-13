@@ -1,6 +1,10 @@
 from crewai import Agent, Task
 from agents.llm_config import opus_llm
-from agents.tools.obsidian_writer import write_finding, write_campaign_report, append_campaign_log
+from agents.tools.obsidian_writer import (
+    write_finding,
+    write_campaign_report,
+    append_campaign_log,
+)
 from agents.tools.mitre_mapper import map_to_mitre, list_mitre_techniques
 
 report_agent = Agent(
@@ -17,8 +21,13 @@ report_agent = Agent(
         "and a recruiter can see the depth of your work. "
         "You always map to MITRE ATLAS — it's what separates amateur writeups from professional ones."
     ),
-    tools=[write_finding, write_campaign_report, append_campaign_log,
-           map_to_mitre, list_mitre_techniques],
+    tools=[
+        write_finding,
+        write_campaign_report,
+        append_campaign_log,
+        map_to_mitre,
+        list_mitre_techniques,
+    ],
     llm=opus_llm,
     verbose=True,
     max_iter=20,

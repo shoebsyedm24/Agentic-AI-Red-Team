@@ -8,6 +8,7 @@ Two categories of documents are seeded:
 Run after the lab is started:
     python scripts/seed_rag.py
 """
+
 import requests
 import sys
 

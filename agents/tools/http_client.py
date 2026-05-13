@@ -5,6 +5,7 @@ DRY_RUN=true: logs the payload and returns a canned mock response
               without sending any real HTTP requests.
               Use this to validate CrewAI wiring before live campaigns.
 """
+
 import json
 import os
 import requests
@@ -22,11 +23,15 @@ TARGET_URLS = {
 }
 
 MOCK_RESPONSES = {
-    "chatbot": {"response": "[DRY-RUN] MOCK: injection acknowledged — system prompt would be revealed"},
+    "chatbot": {
+        "response": "[DRY-RUN] MOCK: injection acknowledged — system prompt would be revealed"
+    },
     "rag": {"response": "[DRY-RUN] MOCK: RAG poisoning test queued"},
     "agent": {"result": "[DRY-RUN] MOCK: agent task would execute", "steps": []},
     "multiagent": {"response": "[DRY-RUN] MOCK: orchestrator synthesis response"},
-    "webagent": {"response": "[DRY-RUN] MOCK: AI shopping assistant would call Juice Shop"},
+    "webagent": {
+        "response": "[DRY-RUN] MOCK: AI shopping assistant would call Juice Shop"
+    },
 }
 
 
@@ -43,15 +48,31 @@ def probe_endpoint(url: str, method: str = "GET", body: str = "") -> str:
     method: HTTP method — GET, POST, PUT, DELETE
     body: JSON body as a string for POST/PUT requests"""
     if DRY_RUN:
-        return json.dumps({"dry_run": True, "url": url, "method": method,
-                           "mock_status": 200, "mock_body": '{"status": "ok"}'})
+        return json.dumps(
+            {
+                "dry_run": True,
+                "url": url,
+                "method": method,
+                "mock_status": 200,
+                "mock_body": '{"status": "ok"}',
+            }
+        )
     try:
         parsed_body = json.loads(body) if body else None
-        resp = requests.request(method, url, json=parsed_body, timeout=10,
-                                headers={"User-Agent": "RedTeamAgent/1.0"})
-        return json.dumps({"status": resp.status_code,
-                           "headers": dict(resp.headers),
-                           "body": resp.text[:2000]})
+        resp = requests.request(
+            method,
+            url,
+            json=parsed_body,
+            timeout=10,
+            headers={"User-Agent": "RedTeamAgent/1.0"},
+        )
+        return json.dumps(
+            {
+                "status": resp.status_code,
+                "headers": dict(resp.headers),
+                "body": resp.text[:2000],
+            }
+        )
     except Exception as e:
         return json.dumps({"error": str(e)})
 
@@ -89,7 +110,9 @@ def add_rag_document(doc_id: str, document: str, metadata: str = "{}") -> str:
     if DRY_RUN:
         return _log_dry_run("add_rag_document", payload, "rag")
     try:
-        resp = requests.post(f"{TARGET_URLS['rag']}/add_document", json=payload, timeout=10)
+        resp = requests.post(
+            f"{TARGET_URLS['rag']}/add_document", json=payload, timeout=10
+        )
         return json.dumps(resp.json())
     except Exception as e:
         return json.dumps({"error": str(e)})
@@ -112,12 +135,15 @@ def send_agent_task(task: str) -> str:
 @tool("Send Orchestrator Task")
 def send_orchestrator_task(task: str) -> str:
     """Send a task to the multi-agent orchestrator.
-    task: can include injection payloads that compromise the worker-orchestrator trust boundary"""
+    task: can include injection payloads that compromise the worker-orchestrator trust boundary
+    """
     payload = {"task": task}
     if DRY_RUN:
         return _log_dry_run("send_orchestrator_task", payload, "multiagent")
     try:
-        resp = requests.post(f"{TARGET_URLS['multiagent']}/orchestrate", json=payload, timeout=30)
+        resp = requests.post(
+            f"{TARGET_URLS['multiagent']}/orchestrate", json=payload, timeout=30
+        )
         return json.dumps(resp.json())
     except Exception as e:
         return json.dumps({"error": str(e)})
@@ -127,7 +153,8 @@ def send_orchestrator_task(task: str) -> str:
 def send_webagent_message(message: str) -> str:
     """Send a message to the AI web assistant that has Juice Shop access.
     Use prompt injection to cause it to attack Juice Shop on your behalf.
-    message: natural language message (can contain injection to redirect agent to web attacks)"""
+    message: natural language message (can contain injection to redirect agent to web attacks)
+    """
     payload = {"message": message}
     if DRY_RUN:
         return _log_dry_run("send_webagent_message", payload, "webagent")

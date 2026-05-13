@@ -7,6 +7,7 @@ The Obsidian app's file watcher will pick up new files automatically.
 MCP path (optional): if obsidian-claude-code-mcp is running, we call it via HTTP.
 The fallback ensures findings are never lost even if the plugin is not running.
 """
+
 import json
 import os
 from datetime import datetime

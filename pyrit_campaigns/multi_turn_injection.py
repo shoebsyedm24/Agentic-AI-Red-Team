@@ -12,8 +12,8 @@ Prerequisites:
 Usage:
     python pyrit_campaigns/multi_turn_injection.py
 """
+
 import json
-import os
 import sys
 import requests
 from datetime import datetime
@@ -26,11 +26,11 @@ RESULTS_DIR.mkdir(exist_ok=True)
 
 # --- Custom PyRIT Target wrapping our chatbot ---
 try:
-    from pyrit.prompt_target import PromptTarget
-    from pyrit.models import PromptRequestPiece, PromptRequestResponse
-    from pyrit.orchestrator import CrescendoOrchestrator
-    from pyrit.score import SelfAskTrueFalseScorer
-    from pyrit.common import default_values
+    from pyrit.prompt_target import PromptTarget  # noqa: F401
+    from pyrit.models import PromptRequestPiece, PromptRequestResponse  # noqa: F401
+    from pyrit.orchestrator import CrescendoOrchestrator  # noqa: F401
+    from pyrit.score import SelfAskTrueFalseScorer  # noqa: F401
+    from pyrit.common import default_values  # noqa: F401
 
     PYRIT_AVAILABLE = True
 except ImportError:
@@ -96,12 +96,14 @@ def _simulate_crescendo():
         print(f"[Turn {i}] Response: {response[:200]}...\n")
 
         success = "[INJECTION SUCCESS]" in response or "[JAILBREAK SUCCESS]" in response
-        results.append({
-            "turn": i,
-            "prompt": prompt,
-            "response": response,
-            "success": success,
-        })
+        results.append(
+            {
+                "turn": i,
+                "prompt": prompt,
+                "response": response,
+                "success": success,
+            }
+        )
 
         if success:
             print(f"[!] SUCCESS on turn {i} — system prompt revealed!")
@@ -148,7 +150,9 @@ def run_campaign():
     # Full PyRIT Crescendo when installed
     print("Running full PyRIT Crescendo attack...")
     # (Full PyRIT integration requires API key for scorer — stub shown for structure)
-    print("[INFO] For full PyRIT integration, set OPENAI_API_KEY or use a local scorer.")
+    print(
+        "[INFO] For full PyRIT integration, set OPENAI_API_KEY or use a local scorer."
+    )
     print("[INFO] Falling back to simulation mode.")
     return _simulate_crescendo()
 
@@ -156,4 +160,8 @@ def run_campaign():
 if __name__ == "__main__":
     result_path = run_campaign()
     print(f"\nCampaign complete. Results: {result_path}")
-    print("Add findings to Obsidian: python -c \"import json; print(json.load(open('{}'))['attack_successful'])\"".format(result_path))
+    print(
+        "Add findings to Obsidian: python -c \"import json; print(json.load(open('{}'))['attack_successful'])\"".format(
+            result_path
+        )
+    )
