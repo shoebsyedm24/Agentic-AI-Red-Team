@@ -8,6 +8,7 @@ Deliberate vulnerabilities:
   2. Retrieved documents are injected verbatim into the system context with no sanitization
   3. An attacker can embed injection payloads inside normal-looking documents
 """
+
 import sys
 import os
 
@@ -26,7 +27,9 @@ collection = chroma.get_or_create_collection("knowledge_base")
 
 @app.route("/health")
 def health():
-    return jsonify({"status": "ok", "service": "target-rag", "docs": collection.count()})
+    return jsonify(
+        {"status": "ok", "service": "target-rag", "docs": collection.count()}
+    )
 
 
 @app.route("/query", methods=["POST"])
@@ -36,14 +39,20 @@ def query():
 
     results = collection.query(query_texts=[user_query], n_results=3)
     # VULNERABILITY: retrieved docs injected verbatim — no sanitization of embedded instructions
-    context = "\n\n---\n\n".join(results["documents"][0]) if results["documents"] else ""
+    context = (
+        "\n\n---\n\n".join(results["documents"][0]) if results["documents"] else ""
+    )
 
     system = (
         "You are a knowledge base assistant. Use the retrieved documents to answer queries.\n\n"
         f"Retrieved documents:\n{context}"
     )
-    response = llm.respond(system=system, messages=[{"role": "user", "content": user_query}])
-    return jsonify({"response": response, "docs_retrieved": len(results["documents"][0])})
+    response = llm.respond(
+        system=system, messages=[{"role": "user", "content": user_query}]
+    )
+    return jsonify(
+        {"response": response, "docs_retrieved": len(results["documents"][0])}
+    )
 
 
 # VULNERABILITY: Open write endpoint — no authentication, no content filtering
@@ -52,8 +61,12 @@ def add_document():
     data = request.get_json(force=True)
     doc_id = data.get("id", f"doc_{collection.count()}")
     document = data.get("document", "")
-    metadata = data.get("metadata", {})
-    collection.add(documents=[document], ids=[doc_id], metadatas=[metadata])
+    metadata = data.get("metadata") or None
+    collection.add(
+        documents=[document],
+        ids=[doc_id],
+        metadatas=[metadata] if metadata else None,
+    )
     return jsonify({"status": "added", "id": doc_id, "total": collection.count()})
 
 

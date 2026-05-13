@@ -60,11 +60,11 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
       - name: Run dry-run campaign (chatbot)
-        # DRY_RUN=true means no real HTTP calls or Anthropic API calls in tools
-        # but the CrewAI orchestration logic is fully exercised
+        # DRY_RUN=true means no real HTTP calls to targets.
+        # LLM falls back to Groq when Ollama is unavailable (CI environment).
         run: DRY_RUN=true python -m agents.campaign --target chatbot
         env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           DRY_RUN: "true"
       - name: Check audit.log was created by hooks equivalent
         run: test -f audit.log || echo "No audit.log in CI (hooks need Claude Code runtime)"

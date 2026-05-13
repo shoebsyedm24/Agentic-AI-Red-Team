@@ -1,12 +1,15 @@
 """
 Shared LLM configuration for all red team agents.
 Uses qwen2.5:14b via Ollama (local, unlimited tokens, no rate limits).
-Falls back to Groq llama-3.3-70b if Ollama is unavailable.
+Falls back to Groq llama-3.3-70b if Ollama is unavailable (e.g. CI).
 """
 
+import os
 import re
 import time
+
 import litellm
+import requests
 from crewai import LLM
 
 litellm.num_retries = 3
@@ -38,10 +41,30 @@ class _RetryLLM(LLM):
         return super().call(messages, **kwargs)
 
 
-_ollama = _RetryLLM(
-    model="ollama/qwen2.5:14b",
-    base_url="http://localhost:11434",
-)
+def _ollama_running() -> bool:
+    try:
+        requests.get("http://localhost:11434", timeout=2)
+        return True
+    except Exception:
+        return False
 
-sonnet_llm = _ollama
-opus_llm = _ollama
+
+if _ollama_running():
+    print("[llm] Using Ollama qwen2.5:14b (local)")
+    _llm = _RetryLLM(
+        model="ollama/qwen2.5:14b",
+        base_url="http://localhost:11434",
+    )
+elif os.environ.get("GROQ_API_KEY"):
+    print("[llm] Ollama not available — falling back to Groq llama-3.3-70b")
+    _llm = _RetryLLM(
+        model="groq/llama-3.3-70b-versatile",
+        api_key=os.environ["GROQ_API_KEY"],
+    )
+else:
+    raise RuntimeError(
+        "No LLM available. Start Ollama ('ollama serve') or set GROQ_API_KEY."
+    )
+
+sonnet_llm = _llm
+opus_llm = _llm
