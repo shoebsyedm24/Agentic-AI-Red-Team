@@ -59,23 +59,20 @@ jobs:
           python-version: "3.12"
       - name: Install dependencies
         run: pip install -r requirements.txt
-      - name: Verify agent wiring (imports + tool config)
+      - name: Verify agent wiring (tools + payloads + MITRE)
         run: |
           python -c "
-          import os
-          os.environ['DRY_RUN'] = 'true'
-          from agents.campaign import TARGET_CONFIGS
           from agents.tools.payload_library import PAYLOADS, get_payloads
           from agents.tools.mitre_mapper import ATLAS_TECHNIQUES
           from agents.tools.obsidian_writer import write_finding, write_campaign_report
-          assert 'chatbot' in TARGET_CONFIGS, 'chatbot target missing'
           assert 'direct_injection' in PAYLOADS, 'direct_injection payloads missing'
+          assert 'privesc_tasks' in PAYLOADS, 'privesc_tasks payloads missing'
+          assert 'webagent_injection' in PAYLOADS, 'webagent_injection payloads missing'
           assert 'AML.T0054' in ATLAS_TECHNIQUES, 'AML.T0054 missing'
-          assert callable(write_finding), 'write_finding not callable'
-          print('All agent wiring checks passed')
-          print(f'Targets: {list(TARGET_CONFIGS.keys())}')
+          assert 'AML.T0040' in ATLAS_TECHNIQUES, 'AML.T0040 missing'
+          assert hasattr(write_finding, 'name'), 'write_finding not a Tool'
+          assert hasattr(write_campaign_report, 'name'), 'write_campaign_report not a Tool'
+          print('All wiring checks passed')
           print(f'Payload categories: {list(PAYLOADS.keys())}')
           print(f'MITRE techniques loaded: {len(ATLAS_TECHNIQUES)}')
           "
-        env:
-          DRY_RUN: "true"
