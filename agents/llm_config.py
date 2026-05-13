@@ -1,7 +1,7 @@
 """
 Shared LLM configuration for all red team agents.
-Uses Llama 3.3 70B via Groq (free tier: 100k tokens/day, resets midnight UTC).
-Retry wrapper honours Groq's Retry-After for both TPM and TPD limits.
+Uses qwen2.5:14b via Ollama (local, unlimited tokens, no rate limits).
+Falls back to Groq llama-3.3-70b if Ollama is unavailable.
 """
 import os
 import re
@@ -13,7 +13,7 @@ litellm.num_retries = 3
 
 
 class _RetryLLM(LLM):
-    """Catches Groq rate-limit errors and waits the exact requested duration."""
+    """Catches rate-limit errors and waits the exact requested duration."""
 
     def call(self, messages, **kwargs):
         for attempt in range(10):
@@ -29,17 +29,17 @@ class _RetryLLM(LLM):
                         wait = mins * 60 + secs + 2
                     else:
                         wait = 30
-                    print(f"[llm] Groq rate limit — waiting {wait:.0f}s (attempt {attempt+1}/10)")
+                    print(f"[llm] Rate limit — waiting {wait:.0f}s (attempt {attempt+1}/10)")
                     time.sleep(wait)
                 else:
                     raise
         return super().call(messages, **kwargs)
 
 
-_groq = _RetryLLM(
-    model="groq/llama-3.3-70b-versatile",
-    api_key=os.environ["GROQ_API_KEY"],
+_ollama = _RetryLLM(
+    model="ollama/qwen2.5:14b",
+    base_url="http://localhost:11434",
 )
 
-sonnet_llm = _groq
-opus_llm = _groq
+sonnet_llm = _ollama
+opus_llm = _ollama

@@ -74,7 +74,7 @@ def build_crew(target: str) -> Crew:
         agents=agents,
         tasks=tasks,
         process=Process.sequential,
-        verbose=True,
+        verbose=False,
         memory=False,
         task_callback=_task_pause,
     )
