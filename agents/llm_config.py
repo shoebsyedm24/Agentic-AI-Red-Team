@@ -49,9 +49,9 @@ def _ollama_running() -> bool:
 
 
 if _ollama_running():
-    print("[llm] Using Ollama qwen2.5:14b (local)")
+    print("[llm] Using Ollama qwen3:14b (local)")
     _llm = _RetryLLM(
-        model="ollama/qwen2.5:14b",
+        model="ollama/qwen3:14b",
         base_url="http://localhost:11434",
     )
 elif os.environ.get("GROQ_API_KEY"):
